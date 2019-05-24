@@ -1,0 +1,18 @@
+{
+  "name": "printerplugin",
+  "version": "1.0.0",
+  "description": "This plugin is for G05A device for printing invoices",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Printer",
+    "plugin",
+    "invoice",
+    "iionic",
+    "PDA"
+  ],
+  "author": "SJ",
+  "license": "ISC"
+}
