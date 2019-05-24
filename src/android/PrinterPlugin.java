@@ -33,50 +33,6 @@ import java.util.Locale;
 public class PrinterPlugin extends CordovaPlugin {
 
     static int MAX = 33;
-    static String data = "[{  " + "   \"id\":414," + "   \"price\":61.93, " + "   \"tax\":141.62,"
-            + "   \"vat\":203.55," + "   \"status\":\"payed\"," + "   \"discount\":0,"
-            + "   \"number\":\"00126-05-2019\"," + "   \"qrcode_path\":\"invoices-qrcode\\/00126-05-2019.png\","
-            + "   \"company\": {" + "	\"company_name\" : \"ABC\"," + "   	\"address\" : \"xxx yyy\","
-            + "   	\"city\" : \"Prishtine\"," + "   	\"country\" : \"Kosovo\"," + "	\"phone\" : \"044 2222222\","
-            + "	\"web\"   : \"www.google.com\"," + "	\"fiscal_num\" : \"121213131343\"" + "   },  		"
-            + "   \"items\":[  " + "      {  " + "         \"id\":362," + "         \"count\":1,"
-            + "         \"price\":2.5," + "         \"attributes\":[  " + "            {  "
-            + "               \"id\":208," + "               \"price\":\"2.10\"," + "               \"attribute\":{  "
-            + "                  \"id\":20," + "                  \"name\":\"peperoni\","
-            + "                  \"price\":2," + "                  \"tax\":2," + "                  \"vat\":2"
-            + "               }" + "            }," + "            {  " + "               \"id\":209,"
-            + "               \"price\":\"24.00\"," + "               \"attribute\":{  "
-            + "                  \"id\":22," + "                  \"name\":\"mushrooms\","
-            + "                  \"price\":30," + "                  \"tax\":20," + "                  \"vat\":30"
-            + "               }" + "            }," + "            {  " + "               \"id\":210,"
-            + "               \"price\":\"0.00\"," + "               \"attribute\":{  " + "                  \"id\":25,"
-            + "                  \"name\":\"pepperoni\"," + "                  \"price\":134.55,"
-            + "                  \"tax\":100," + "                  \"vat\":134.55" + "               }"
-            + "            }" + "         ]," + "         \"articles\":{  " + "            \"id\":12,"
-            + "            \"name\":\"pica\"," + "            \"description\":\"pica desc\","
-            + "            \"price\":3" + "         }" + "      }," + "      {  " + "         \"id\":363,"
-            + "         \"count\":1," + "         \"price\":32.34," + "         \"attributes\":[  " + "            {  "
-            + "               \"id\":211," + "               \"price\":\"0.99\"," + "               \"attribute\":{  "
-            + "                  \"id\":21," + "                  \"name\":\"Extra cheese\","
-            + "                  \"price\":1," + "                  \"tax\":1," + "                  \"vat\":1"
-            + "               }" + "            }" + "         ]," + "         \"articles\":{  "
-            + "            \"id\":13," + "            \"name\":\"Hamburger\","
-            + "            \"description\":\"Test 3 Article\"," + "            \"price\":33" + "         }" + "      },"
-            + "      {  " + "         \"id\":364," + "         \"count\":2," + "         \"price\":32.34,"
-            + "         \"articles\":{  " + "            \"id\":14," + "            \"name\":\"Coca Cola\","
-            + "            \"description\":\"Test 3 Article\"," + "            \"price\":33" + "         }" + "      }"
-            + "" + "   ]," + "   \"cashier\":{  " + "      \"id\":3," + "      \"name\":\"asllan\","
-            + "      \"last_name\":\"smith\"," + "      \"email\":\"dsxsassd@gmail.com\","
-            + "      \"username\":\"asllan.smith2\"," + "      \"gender\":\"Male\","
-            + "      \"date_of_birth\":\"2019-01-05\"," + "      \"address\":\"Prishtine\","
-            + "      \"house_nr\":\"22\"," + "      \"phone_number\":\"044123565\"," + "      \"role\":\"Operator\","
-            + "      \"role_id\":{  " + "         \"id\":3" + "      }," + "      \"city_id\":2,"
-            + "      \"company_id\":2" + "   }," + "   \"user\":{  " + "      \"id\":14," + "      \"name\":\"Will\","
-            + "      \"last_name\":\"Smith\"," + "      \"email\":\"aadwdawdi@gmail.com\","
-            + "      \"username\":\"ciki\"," + "      \"gender\":\"male\"," + "      \"date_of_birth\":\"2011-07-05\","
-            + "      \"address\":\"Kosovo\"," + "      \"house_nr\":\"23\"," + "      \"phone_number\":\"0445655667\","
-            + "      \"role\":\"Customer\"," + "      \"role_id\":{  " + "         \"id\":4" + "      },"
-            + "      \"city_id\":5," + "      \"company_id\":2" + "   }" + "}]";
 
     private AidlDeviceService mAidlDeviceService = null; // deklarimi i paisje ne baze te API
     private AidlPrinter mPrinter = null; // deklarimi i printerit
@@ -121,9 +77,9 @@ public class PrinterPlugin extends CordovaPlugin {
                 if (mPrinter != null) {
                     try {
                         String jsonStr = "[";
-                        JSONObject json = new JSONArray(data).getJSONObject(0);
+                        JSONObject json = args.getJSONObject(0);
                         JSONObject company = json.getJSONObject("company");
-                        String companyName = company.getString("company_name");
+                        String companyName = company.getString("name");
                         jsonStr += format("txt", 2, 1, "center", companyName, null, null, false);
                         String companyAddress = company.getString("address");
                         jsonStr += format("txt", 2, 1, "center", companyAddress, null, null, false);
@@ -140,7 +96,7 @@ public class PrinterPlugin extends CordovaPlugin {
                         String web = company.optString("web");
                         if (web != null)
                             jsonStr += format("txt", 2, 1, "center", web, null, null, false);
-                        String fiscalNum = company.getString("fiscal_num");
+                        String fiscalNum = company.getString("fiscal_nr");
                         String number = json.getString("number");
                         jsonStr += format("txt", 2, 1, "center", "Fiscal Num: " + fiscalNum, null, null, false);
                         jsonStr += format("txt", 5, 5, "center", "=====================", null, null, false);
@@ -152,8 +108,9 @@ public class PrinterPlugin extends CordovaPlugin {
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject item = (JSONObject) items.get(i);
                             String article = item.getJSONObject("articles").getString("name").trim();
-                            double price = item.getDouble("price");
+                            double price = item.getJSONObject("articles").getDouble("price");
                             int quantity = item.getInt("count");
+                            price = price * quantity;
                             int noOfSpaces = calculateSpace(article, price + "€", quantity + "x", 2);
                             // System.out.println("spaces: " + noOfSpaces + " for "+article);
                             String s = String.format("%d x %s", quantity, article);
@@ -166,7 +123,8 @@ public class PrinterPlugin extends CordovaPlugin {
                             if (attributes != null)
                                 for (int j = 0; j < attributes.length(); j++) {
                                     JSONObject itemAttribute = (JSONObject) attributes.get(j);
-                                    String itemAttributePrice = itemAttribute.getString("price");
+                                    double itemAttributePrice = itemAttribute.getJSONObject("attribute")
+                                            .getDouble("vat");
                                     String itemAttributeName = itemAttribute.getJSONObject("attribute")
                                             .getString("name").trim();
                                     noOfSpaces = calculateSpace(itemAttributeName + "- ", itemAttributePrice + "€", "",
@@ -188,7 +146,7 @@ public class PrinterPlugin extends CordovaPlugin {
                         String vatStr = String.format("VAT: %.2f€", vat);
                         String priceWithVatStr = String.format("TOTAL: %.2f€", priceWithVat);
                         String dateStr = String.format("Date: %s", dateString);
-                        String cashier = json.getJSONObject("cashier").getString("name") + " "
+                        String cashier = "Cashier: " + json.getJSONObject("cashier").getString("name") + " "
                                 + json.getJSONObject("cashier").getString("last_name");
                         jsonStr += format("txt", 5, 1, "right", "-----------", null, null, false);
                         jsonStr += format("txt", 2, 1, "right", priceStr, null, null, false);
