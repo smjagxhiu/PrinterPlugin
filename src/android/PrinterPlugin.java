@@ -82,7 +82,8 @@ public class PrinterPlugin extends CordovaPlugin {
                         String companyName = company.getString("name");
                         jsonStr += format("txt", 2, 1, "center", companyName, null, null, false);
                         String companyAddress = company.getString("address");
-                        jsonStr += format("txt", 2, 1, "center", companyAddress, null, null, false);
+                        if (companyAddress != null && companyAddress.trim().length() != 0)
+                            jsonStr += format("txt", 2, 1, "center", companyAddress, null, null, false);
                         String city = company.optString("city");
                         String country = company.optString("country");
                         String countrAndCity = "";
