@@ -125,8 +125,8 @@ public class PrinterPlugin extends CordovaPlugin {
                             if (attributes != null)
                                 for (int j = 0; j < attributes.length(); j++) {
                                     JSONObject itemAttribute = (JSONObject) attributes.get(j);
-                                    double itemAttributePrice = itemAttribute.getJSONObject("attribute")
-                                            .getDouble("vat");
+                                    double itemAttributePrice = quantity
+                                            * itemAttribute.getJSONObject("attribute").getDouble("vat");
                                     String itemAttributeName = itemAttribute.getJSONObject("attribute")
                                             .getString("name").trim();
                                     noOfSpaces = calculateSpace(itemAttributeName + "- ", itemAttributePrice + "€", "",
