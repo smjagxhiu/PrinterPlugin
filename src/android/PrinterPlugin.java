@@ -113,12 +113,15 @@ public class PrinterPlugin extends CordovaPlugin {
                             double price = item.getJSONObject("articles").getDouble("price");
                             int quantity = item.getInt("count");
                             price = price * quantity;
-                            int noOfSpaces = calculateSpace(article, price + "€", quantity + "x", 2);
+                            // NEW
+                            String finalPriceStr = String.format("%.2f€", price);
+                            int noOfSpaces = calculateSpace(article, finalPriceStr, quantity + "x", 2);
                             // System.out.println("spaces: " + noOfSpaces + " for "+article);
                             String s = String.format("%d x %s", quantity, article);
                             for (int k = 0; k < noOfSpaces; k++)
                                 s += " ";
-                            s += price + "€";
+                            s += finalPriceStr;
+                            // END
                             jsonStr += format("txt", 2, 1, "left", s, null, null, false);
                             itemStr += s + "\n";
                             JSONArray attributes = item.optJSONArray("attributes");
@@ -129,12 +132,14 @@ public class PrinterPlugin extends CordovaPlugin {
                                             * itemAttribute.getJSONObject("attribute").getDouble("vat");
                                     String itemAttributeName = itemAttribute.getJSONObject("attribute")
                                             .getString("name").trim();
-                                    noOfSpaces = calculateSpace(itemAttributeName + "- ", itemAttributePrice + "€", "",
-                                            1);
+                                    // NEW
+                                    String itemAttributePriceStr = String.format("%.2f€", itemAttributePrice);
+                                    noOfSpaces = calculateSpace(itemAttributeName + "- ", itemAttributePriceStr, "", 1);
                                     s = String.format(" - %s", itemAttributeName);
                                     for (int k = 0; k < noOfSpaces; k++)
                                         s += " ";
-                                    s += String.format("%s", itemAttributePrice + "€");
+                                    s += String.format("%s", itemAttributePriceStr);
+                                    // END
                                     jsonStr += format("txt", 2, 1, "left", s, null, 1, false);
                                     itemStr += s + "\n";
                                 } // end of attributes
